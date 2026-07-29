@@ -39,15 +39,17 @@ const createUser = catchAsync(async (req: Request, res: Response, next: NextFunc
 
 const getMyProfileFromDB = catchAsync(async (req: Request, res: Response, next: NextFunction)=> {
 
-    const {accessToken} = req.cookies
+    // const {accessToken} = req.cookies
 
-    const verifiedToken = jwtUtils.verifyToken(accessToken, config.jwt_access_secret)
+    // console.log(req.user, "user request");
 
-    if(typeof verifiedToken === "string"){
-        throw new Error(verifiedToken)
-    }
+    // const verifiedToken = jwtUtils.verifyToken(accessToken, config.jwt_access_secret)
 
-    const profile = await userService.getMyProfileFromDB(verifiedToken.id)
+    // if(typeof verifiedToken === "string"){
+    //     throw new Error(verifiedToken)
+    // }
+
+    const profile = await userService.getMyProfileFromDB(req.user?.id as string)
 
     sendResponse(res, {
         success: true,
@@ -58,9 +60,24 @@ const getMyProfileFromDB = catchAsync(async (req: Request, res: Response, next: 
     
 })
 
+const updateMyProfile = catchAsync(async (req: Request, res: Response, next: NextFunction)=> {
+    const userId = req.user?.id as string;
+    const payload = req.body;
+
+    const updatedProfile = await userService.updateMyProfile(userId , payload)
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "profile updated successfully",
+        data: {updatedProfile}
+    })
+})
+
 export const userController = {
     createUser,
-    getMyProfileFromDB
+    getMyProfileFromDB,
+    updateMyProfile
 }
 
 // const createUser = async(req: Request, res: Response)=> {
