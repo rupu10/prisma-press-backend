@@ -82,6 +82,10 @@ const getMyPosts =async (authorId: string) => {
     return result
 }
 
+const updatedPost = () => {
+    
+}
+
 export const postService = {
     createPost,
     getAllPosts,
