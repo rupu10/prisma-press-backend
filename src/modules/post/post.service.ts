@@ -1,5 +1,5 @@
 import { prisma } from "../../lib/prisma"
-import { ICreatePostPayload } from "./post.interface"
+import { ICreatePostPayload, IUpdatePostPayload } from "./post.interface"
 
 const createPost = async(payload: ICreatePostPayload, userId: string) => {
     const result = await prisma.post.create({
@@ -82,8 +82,33 @@ const getMyPosts =async (authorId: string) => {
     return result
 }
 
-const updatedPost = () => {
-    
+const updatedPost = async(postId: string, payload: IUpdatePostPayload, authorId: string, isAdmin: boolean) => {
+    const post = await prisma.post.findUniqueOrThrow({
+        where: {
+            id: postId
+        }
+    })
+
+    if(!isAdmin && post.authorId !== authorId){
+        throw new Error("You aren't the owner")
+    }
+
+    const result = await prisma.post.update({
+        where: {
+            id: postId
+        },
+        data: payload,
+        include: {
+            comments: true,
+            author: {
+                omit: {
+                    password: true
+                }
+            },
+        } 
+    })
+
+    return result
 }
 
 export const postService = {

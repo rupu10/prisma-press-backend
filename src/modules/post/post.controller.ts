@@ -59,9 +59,13 @@ const getPostById = catchAsync(async (req: Request, res: Response, next: NextFun
     })
 })
 
-const updatePost = ()=> {
+const updatePost = catchAsync(async(req:Request, res:Response, next:NextFunction)=>{
+    const authorId = req.user?.id
+    const isAdmin = req.user?.role === "ADMIN";
 
-}
+    const postId = req.params.postId;
+    const payload= req.body;
+})
 
 const deletePost= () => {
 
