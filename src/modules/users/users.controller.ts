@@ -17,6 +17,8 @@ const createUser = catchAsync(async (req: Request, res: Response, next: NextFunc
 
     const payload = req.body;
 
+    // console.log(payload);
+
     const user = await userService.createUserIntoDB(payload);
 
     // res.status(httpStatus.CREATED).json({
